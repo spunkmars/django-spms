@@ -1,0 +1,313 @@
+{% extends "blank_box.html" %}
+{% load i18n %}
+{% load static %}
+{% block main_nav %}{% endblock %}
+{% block sidebar_nav %}{% endblock %}
+{% block current_location %}{% endblock %}
+{% block sidebar_control %}{% endblock %}
+{% block bottom %}{% endblock %}
+{% block title %}{% endblock %}#}
+{% block content_title %}{% endblock %}
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'ztree/css/metroStyle/metroStyle.css' %}" type="text/css">
+    {#    <link rel="stylesheet" href="{% static 'ztree/css/zTreeStyle/zTreeStyle.css' %}" type="text/css">#}
+
+    <link rel="stylesheet" href="{% static 'ztree/css/bootstrapStyle/bootstrapStyle.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'ztree/css/demo.css' %}" type="text/css">
+
+    <style type="text/css">
+        .ztree li span.button.switch.level0 {
+            visibility: hidden;
+            width: 1px;
+        }
+
+        .ztree li ul.level0 {
+            padding: 0;
+            background: none;
+        }
+
+        ul.ztree {
+            margin-top: 10px;
+            border: 1px solid #617775;
+            background: #fff;
+            width: 500px;
+            height: 320px;
+            overflow-y: scroll;
+            overflow-x: auto;
+        }
+
+    </style>
+{% endblock %}
+{% block box_title %} 当前角色：<{{ role_name }}>{% endblock %}
+{% block box_body %}
+
+    <div class="text-left">
+        <button type="button" id="btn_add_rootnode" class="btn btn-default  btn-xs margin-left ">添加根节点</button>
+        <button type="button" id="btn_checkall" class="btn btn-default  btn-xs margin-left ">全选</button>
+        <button type="button" id="btn_uncheckall" class="btn btn-default  btn-xs margin-left ">全不选</button>
+        <button type="button" id="btn_reset" class="btn btn-default  btn-xs margin-left ">恢复</button>
+
+    </div>
+    <form class="form-horizontal" id="TreeForm" action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="tree_data" id="tree_data" value=""/>
+        <input type="hidden" name='role_id' value="{{ role_id }}"/>
+
+        <div class="">
+            <ul id="perm_tree" class="ztree"></ul>
+        </div>
+        <div class="text-left">
+            <p>&nbsp;</p>
+            <button type="button" id="btn_refresh" class="btn btn-info margin-left ">刷新</button>
+            <button type="button" id="btn_save" class="btn btn-info margin-left ">保存</button>
+        </div>
+    </form>
+
+
+{% endblock %}
+{% block box_footer %}{% endblock %}
+{% block custom_js %}
+    <script type="text/javascript" src="{% static 'ztree/js/jquery.ztree.core.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ztree/js/jquery.ztree.excheck.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ztree/js/jquery.ztree.exedit.js' %}"></script>
+    <script type="text/javascript" src="{% static 'layer/layer.js' %}"></script>
+    <SCRIPT type="text/javascript">
+
+        $(document).ready(function () {
+            var treeObj;
+            var setting = {
+                view: {
+                    addHoverDom: addHoverDom,
+                    removeHoverDom: removeHoverDom,
+                    selectedMulti: false
+                },
+                edit: {
+                    enable: false
+
+                },
+                check: {
+                    enable: true
+                },
+                data: {
+                    simpleData: {
+                        enable: true
+                    }
+                },
+                //callback: {
+                //    onClick: zTreeOnClick,
+                //    beforeDrag: beforeDrag, //拖拽前：捕获节点被拖拽之前的事件回调函数，并且根据返回值确定是否允许开启拖拽操作
+                //    beforeDrop: beforeDrop, //拖拽中：捕获节点操作结束之前的事件回调函数，并且根据返回值确定是否允许此拖拽操作
+                //    beforeDragOpen: beforeDragOpen, //拖拽到的目标节点是否展开：用于捕获拖拽节点移动到折叠状态的父节点后，即将自动展开该父节点之前的事件回调函数，并且根据返回值确定是否允许自动展开操作
+                //    onDrag: onDrag, //捕获节点被拖拽的事件回调函数
+                //    onDrop: onDrop, //捕获节点拖拽操作结束的事件回调函数
+                //    onExpand: onExpand //捕获节点被展开的事件回调函数
+                //},
+            };
+
+
+            function doSetSelectedNode(index) {
+                layer.close(index);
+            }
+
+            function addHoverDom(treeId, treeNode) {
+                var sObj = $("#" + treeNode.tId + "_span");
+                if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+                if (treeNode.editNameFlag || $("#editBtn_" + treeNode.tId).length > 0) return;
+                if (treeNode.editNameFlag || $("#removeBtn_" + treeNode.tId).length > 0) return;
+
+                var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                    + "' title='add node' onfocus='this.blur();'></span>";
+                sObj.append(addStr)
+                var add_btn = $("#addBtn_" + treeNode.tId);
+                if (add_btn) add_btn.bind("click", function () {
+                        layer.open({
+                                type: 2,
+                                area: ['300px', '500px'],
+                                title: ['添加权限资源', 'background-color:#dae7f5'],
+                                skin: 'layui-layer-demo', //加上边框
+                                shadeClose: true,
+                                closeBtn: 1,
+                                btn: ['确定',],
+                                content: '/accounts/permission/add_resource/' + treeNode.id + '/',
+                                yes: function (index, layero) {
+                                    var ifname = "layui-layer-iframe" + index;//获得layer层的名字
+                                    var Ifame = window.frames[ifname];
+                                    Ifame.document.getElementById("myform").submit();
+                                    layer.close(index);
+                                },
+                                end: function () {
+                                    show_tree();
+                                }
+
+                                ,
+                            }
+                        )
+                        ;
+                        return false;
+                    }
+                );
+                //}
+
+                var editStr = "<span class='button edit' id='editBtn_" + treeNode.tId
+                    + "' title='edit node' onfocus='this.blur();'></span>";
+                sObj.append(editStr);
+                var btn = $("#editBtn_" + treeNode.tId);
+                if (btn) btn.bind("click", function () {
+                        layer.open({
+                            type: 2,
+                            area: ['300px', '500px'],
+                            title: ['编辑权限资源', 'background-color:#dae7f5'],
+                            skin: 'layui-layer-demo', //加上边框
+                            shadeClose: true,
+                            btn: ['确定', '取消'],
+                            content: '/accounts/permission/edit_resource/' + treeNode.id + '/',
+                            //content: $('#layer-resource-add'),
+                            //content: '\<div style="padding:20px;"\>自定义内容\<\/div>',
+                            yes: function (index, layero) {
+                                var ifname = "layui-layer-iframe" + index;//获得layer层的名字
+                                var Ifame = window.frames[ifname];
+                                Ifame.document.getElementById("myform").submit();
+                                layer.close(index);
+                            },
+
+                            btn2: function (index) {
+                                layer.close(index);
+                            },
+                            end: function () {
+                                show_tree();
+                            },
+                        });
+                        return false;
+                    }
+                );
+                var removeStr = "<span class='button remove' id='removeBtn_" + treeNode.tId
+                    + "' title='remove node' onfocus='this.blur();'></span>";
+                sObj.append(removeStr)
+                var remove_btn = $("#removeBtn_" + treeNode.tId);
+                if (remove_btn) remove_btn.bind("click", function () {
+                        layer.open({
+                            type: 1,
+                            area: ['300px', '200px'],
+                            title: ['删除权限资源', 'background-color:#dae7f5'],
+                            skin: 'layui-layer-demo', //加上边框
+                            shadeClose: true,
+                            btn: ['确定', '取消'],
+                            content: '<div style="padding:20px;"><p align="center"> 是否删除： &nbsp;' + treeNode.name + ' </p></div>',
+                            yes: function (index, layero) {
+                                var d_url = '/accounts/permission/del_resource/' + treeNode.id + '/'
+                                $.post(d_url)
+                                layer.close(index);
+                            },
+                            btn2: function (index) {
+                                layer.close(index);
+                            },
+                            end: function () {
+                                show_tree();
+                            },
+                        });
+                        return false;
+                    }
+                );
+            }
+            ;
+
+            function removeHoverDom(treeId, treeNode) {
+                $("#addBtn_" + treeNode.tId).unbind().remove();
+                $("#editBtn_" + treeNode.tId).unbind().remove();
+                $("#removeBtn_" + treeNode.tId).unbind().remove();
+            };
+
+
+            function show_tree() {
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'account:permission:get_perm_tree' role_id %}",
+                    cache: false,
+                    success: function (msg) {
+                        $.fn.zTree.init($("#perm_tree"), setting, msg.data);
+                        treeObj = $.fn.zTree.getZTreeObj("perm_tree");
+                        treeObj.expandAll(true);
+                        return;
+                    }
+                });
+            }
+
+            show_tree();
+
+            $('#btn_add_rootnode').on('click', function () {
+                layer.open({
+                        type: 2,
+                        area: ['300px', '500px'],
+                        title: ['添加根节点', 'background-color:#dae7f5'],
+                        skin: 'layui-layer-demo', //加上边框
+                        shadeClose: true,
+                        closeBtn: 1,
+                        btn: ['确定', '取消'],
+                        content: '/accounts/permission/add_resource/0/',
+                        yes: function (index, layero) {
+                            var ifname = "layui-layer-iframe" + index;//获得layer层的名字
+                            var Ifame = window.frames[ifname];
+                            Ifame.document.getElementById("myform").submit();
+                            layer.close(index);
+                        },
+                        btn2: function (index) {
+                            layer.close(index);
+                        },
+                        end: function () {
+                            show_tree();
+                        }
+
+                        ,
+                    }
+                )
+                ;
+            });
+
+            $("#btn_checkall").click(function () {
+                treeObj.checkAllNodes(true);
+            });
+
+
+            $("#btn_uncheckall").click(function () {
+                treeObj.checkAllNodes(false);
+            });
+
+            $("#btn_reset").click(function () {
+                show_tree();
+            });
+
+            $("#btn_refresh").click(function () {
+                show_tree();
+            });
+
+            $("#btn_save").click(function () {
+                treeObj = $.fn.zTree.getZTreeObj("perm_tree");
+                {#var nodes = treeObj.getCheckedNodes(true);#}
+                var nodes = treeObj.getChangeCheckedNodes(true);
+
+                $("#tree_data").val(JSON.stringify(nodes));
+                var data = $("#TreeForm").serialize();
+                $.ajax({
+                    type: $("#TreeForm").attr('method'),
+                    url: "{% url 'account:permission:save_perm_tree' role_id %}",
+                    data: data,
+                    cache: false,
+                    beforeSend: function () {
+                        var k = '';
+                    },
+                    success: function (msg) {
+                        if (msg.result) {
+                            show_tree();
+                        } else {
+                            show_tree();
+                        }
+                        return;
+                    }
+                });
+            });
+        })
+        ;
+
+
+    </SCRIPT>
+{% endblock %}

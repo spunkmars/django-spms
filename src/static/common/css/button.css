@@ -1,0 +1,110 @@
+.layui-btn {
+    vertical-align: middle
+}
+
+.layui-btn {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none
+}
+
+.layui-btn {
+    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #009688;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer
+}
+
+.layui-btn:hover {
+    opacity: .8;
+    filter: alpha(opacity=80);
+    color: #fff
+}
+
+.layui-btn:active {
+    opacity: 1;
+    filter: alpha(opacity=100)
+}
+
+.layui-btn + .layui-btn {
+    margin-left: 10px
+}
+
+.layui-btn-radius {
+    border-radius: 100px
+}
+
+.layui-btn .layui-icon {
+    margin-right: 3px;
+    font-size: 18px;
+    vertical-align: bottom;
+    vertical-align: middle \9
+}
+
+.layui-btn-primary {
+    border: 1px solid #C9C9C9;
+    background-color: #fff;
+    color: #555
+}
+
+.layui-btn-primary:hover {
+    border-color: #009688;
+    color: #333
+}
+
+.layui-btn-normal {
+    background-color: #1E9FFF
+}
+
+.layui-btn-warm {
+    background-color: #FFB800
+}
+
+.layui-btn-danger {
+    background-color: #FF5722
+}
+
+.layui-btn-disabled, .layui-btn-disabled:active, .layui-btn-disabled:hover {
+    border: 1px solid #e6e6e6;
+    background-color: #FBFBFB;
+    color: #C9C9C9;
+    cursor: not-allowed;
+    opacity: 1
+}
+
+.layui-btn-big {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 25px;
+    font-size: 16px
+}
+
+.layui-btn-small {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    font-size: 12px
+}
+
+.layui-btn-small i {
+    font-size: 16px !important
+}
+
+.layui-btn-mini {
+    height: 22px;
+    line-height: 22px;
+    padding: 0 5px;
+    font-size: 12px
+}
+
+.layui-btn-mini i {
+    font-size: 14px !important
+}

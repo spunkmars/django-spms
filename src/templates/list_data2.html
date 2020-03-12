@@ -1,0 +1,195 @@
+{% extends "blank.html" %}
+{% load i18n %}
+{% load static %}
+{% load deal_time %}
+{% load tags %}
+{% load field_data_tag %}
+{% block title %} {% trans "List" %} {% trans app.fun|title %} {% endblock %}
+{% block custom_css %}
+    <!-- DataTables -->
+    <link
+            rel="stylesheet"
+            href="{% static "adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css" %}">
+{% endblock %}
+
+{% block content_title %} {% trans "List" %} {% trans app.fun|title %} {% endblock %}
+{% block real_content %}
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">{% trans app.fun|title %} {% trans List %}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="list_table" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                {% if ex_field_list %}{% for value in ex_field_list.values %}
+                                    {% for key,value in value.items %}
+                                        {% ifequal key "fields" %}{% for field in value %}
+                                            <th>{% trans field|title %}</th>
+                                        {% endfor %}{% endifequal %}{% endfor %}{% endfor %}{% endif %}
+                                {% for field in show_field_list %}
+                                    <th><a href="{{ url_sort_prefix }}{% get_sort_by_url sort_by field %}"
+                                           name="{{ field }}"
+                                           title="sort by {{ field }} ">{% trans field|title %}</a></th>
+                                {% endfor %}
+                                <th></th>
+                            </tr>
+                            </thead>
+                            {% if info %}
+                                <tbody>
+                                {% for show_item in item_list.object_list %}
+                                    <tr role="row" class="even">
+                                        {% field_data show_item show_field_list ex_field_list %}
+                                        <td>
+                                            {% if app.extra_urls %}
+                                                {% for e_url in app.extra_urls %}
+                                                    <button class="btn btn-info btn-xs" type="button"
+                                                            onclick="window.location.href='{% url e_url.url show_item.id %}'">
+                                                        {% trans e_url.title %}
+                                                    </button>
+                                                {% endfor %}
+                                            {% endif %}
+                                            <button class="btn btn-info btn-xs" type="button"
+                                                    onclick="window.location.href='{% url app.edit_url show_item.id %}'">
+                                                {% trans 'edit' %}
+                                            </button>
+                                            <button class="btn  btn-danger btn-xs" type="button" data-toggle="modal"
+                                                    data-target="#delModal"
+                                                    onclick="del_id({{ show_item.id }},'{% url app.del_url show_item.id %}')">
+                                                {% trans 'del' %}
+                                            </button>
+                                        </td>
+                                    </tr>{% endfor %}
+                                </tbody>{% endif %}
+                            <tfoot>
+                            <tr>
+                                {% if ex_field_list %}{% for value in ex_field_list.values %}
+                                    {% for key,value in value.items %}
+                                        {% ifequal key "fields" %}{% for field in value %}
+                                            <th>{% trans field|title %}</th>
+                                        {% endfor %}{% endifequal %}{% endfor %}{% endfor %}{% endif %}
+                                {% for field in show_field_list %}
+                                    <th><a href="{{ url_sort_prefix }}{% get_sort_by_url sort_by field %}"
+                                           name="{{ field }}"
+                                           title="sort by {{ field }} ">{% trans field|title %}</a></th>
+                                {% endfor %}
+                                <th></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        {% ifequal is_frontend_paging False %}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <nav>
+                                        <ul class="pagination">
+                                            {% if item_list.has_previous %}
+                                                <li>
+                                                    <a href="
+                                            {{ page_nav_base_url }}{{ url_prefix }}{{ item_list.previous_page_number }}"
+                                                       aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ page_nav_base_url }}{{ url_prefix }}1"
+                                                       title="first">{% trans "first" %}</a>
+                                                </li>
+                                            {% endif %}
+
+                                            {% for p in page_range %}
+                                                {% ifequal p item_list.number %}
+                                                    <li class="active"><a href="#">{{ p }}</a></li>
+                                                {% else %}
+                                                    <li><a href="{{ page_nav_base_url }}{{ url_prefix }}{{ p }}"
+                                                           title="{{ p }}">{{ p }}</a></li>
+                                                {% endifequal %}
+                                            {% endfor %}
+
+                                            {% if item_list.has_next %}
+                                                <li>
+                                                    <a href="
+                                                            {{ page_nav_base_url }}{{ url_prefix }}{{ paginator.num_pages }}"
+                                                       title="last">{% trans "last" %}</a>
+                                                </li>
+                                                <li>
+                                                    <a href="
+                                                            {{ page_nav_base_url }}{{ url_prefix }}{{ paginator.num_pages }}"
+                                                       aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        {% endifequal %}
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+
+                <div class="modal modal-danger fade" id="delModal" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content cos-sm-2">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">Sure delete</h4>
+                            </div>
+                            <div class="modal-body" id='delAlert'>
+                            </div>
+                            <div class="modal-footer" id="delButton">
+                                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close
+                                </button>
+                                <button type="button" class="btn btn-primary btn-outline" onclick="del_sure()">Sure
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+{% endblock %}
+{% block custom_js %}
+    <script src="{% static "adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+    <!-- SlimScroll -->
+    <script src="{% static "adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js" %}"></script>
+    <!-- FastClick -->
+    <script src="{% static "adminlte/bower_components/fastclick/lib/fastclick.js" %}"></script>
+    <script src="{% static "common/js/deal-data.js" %}"></script>
+    <script>
+        $(function () {
+            //$('#list_table').DataTable()
+            $('#list_table').DataTable({
+                {%  ifequal is_frontend_paging True %}
+                    'paging': true,
+                    'info': true,
+                    'searching': true,
+                    'ordering': false,
+                {% endifequal %}
+                {%  ifequal is_frontend_paging False %}
+                    'paging': false,
+                    'info': false,
+                    'searching': false,
+                    'ordering': false,
+                {% endifequal %}
+                'lengthChange': true,
+                'autoWidth': true
+            })
+        })
+    </script>
+{% endblock %}

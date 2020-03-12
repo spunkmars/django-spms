@@ -1,0 +1,9 @@
+{% load i18n %}
+{% block current_location %}
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="#">{% trans app.name %}</a></li>
+            <li><a href="#">{% trans app.fun %}</a></li>
+            <li class="active">{% trans app.location %}</li>
+      </ol>
+{% endblock %}

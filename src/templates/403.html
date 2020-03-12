@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %} 403 {% endblock %}
+
+{% block content_title %}  403 {% endblock %}
+
+{% block wrapper %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header margin-bottom">
+        <ol class="breadcrumb">
+            <li class="active">403错误</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <section class="content">
+            <div class="error-page">
+                <h2 class="headline text-yellow"> 403</h2>
+
+                <p>&nbsp</p>
+                <div class="error-content">
+                    <h3><i class="fa fa-warning text-yellow"></i> 你无权访问该功能,请联系管理员！</h3>
+
+                </div>
+                <!-- /.error-content -->
+            </div>
+            <!-- /.error-page -->
+        </section>
+
+
+    </section>
+
+    <!-- /.content -->
+{% endblock %}

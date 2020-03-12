@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %} {{ SITE_NAME }} - Sign in {% endblock %}
+{% block custom_css %}
+<!-- iCheck -->
+<link rel="stylesheet" href="{% static "adminlte/plugins/iCheck/square/blue.css" %}">
+{% endblock %}
+{% block html_body_css_style %}hold-transition skin-blue  login-page{% endblock %}
+{% block wrapper %}
+<div class="login-box">
+    <div class="login-logo">
+        <a href="{% url 'site_index' %}"><b>{{ SITE_NAME }}</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">Sign in</p>
+
+        <form role="form" action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="Username" name="username">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="Password" name="password">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="form-group  has-feedback">
+                <input id="id_checkcode" placeholder="Checkcode" type="text" name="checkcode" class="form-control"
+                       maxlength="30"/>
+                <span class="glyphicon glyphicon-modal-window form-control-feedback"></span>
+                <img onclick="this.setAttribute('src','{% url 'commonx:get_checkcode_image' %}?nocache='+Math.random());"
+                     onload="if(this.width>this.height){ if(this.width>160)this.width=160; }else{if(this.height>55) this.height=55;}"
+                     src="{% url 'commonx:get_checkcode_image' %}" alt="CheckCode"/>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="checkbox icheck">
+                        <label>
+                            <input type="checkbox"> Remember Me
+                        </label>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+        <a href="#">I forgot my password</a><br>
+        <a href="{% url 'account:user:signup' %}" class="text-center">Register</a>
+
+    </div>
+    <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+{% endblock %}
+
+{% block custom_js %}
+<!-- iCheck -->
+<script src="{% static 'adminlte/plugins/iCheck/icheck.js' %}"></script>
+<script >
+$(function () {
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' /* optional */
+    });
+});
+</script>
+{% endblock %}

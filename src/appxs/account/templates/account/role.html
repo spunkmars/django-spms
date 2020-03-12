@@ -1,0 +1,279 @@
+{% extends "blank.html" %}
+{% load i18n %}
+{% load static %}
+{% load deal_time %}
+{% load tags %}
+{% load field_data_tag %}
+{% block title %} {% trans "List" %} {% trans app.fun|title %} {% endblock %}
+{% block custom_css %}
+    <!-- DataTables -->
+    <link
+            rel="stylesheet"
+            href="{% static "adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css" %}">
+{% endblock %}
+
+{% block content_title %} {% trans "List" %} {% trans app.fun|title %} {% endblock %}
+{% block real_content %}
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        {% if 'accounts-manage-role-add' in request.permission_codes %}
+
+                            <button type="button" onclick="open_add_role_layer()" id="btn_add_role"
+                                    class="btn btn-info  btn-sm margin-left ">添加角色
+                            </button>
+                        {% endif %}
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="list_table" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                {% if ex_field_list %}{% for value in ex_field_list.values %}
+                                    {% for key,value in value.items %}
+                                        {% ifequal key "fields" %}{% for field in value %}
+                                            <th>{% trans field|title %}</th>
+                                        {% endfor %}{% endifequal %}{% endfor %}{% endfor %}{% endif %}
+                                {% for field, fvname in show_fieldvname_dict.items %}
+                                    <th><a href="{{ url_sort_prefix }}{% get_sort_by_url sort_by field %}"
+                                           name="{{ field }}"
+                                           title="sort by {{ fvname }} ">{% trans fvname|title %}</a></th>
+                                {% endfor %}
+                                <th></th>
+                            </tr>
+                            </thead>
+                            {% if info %}
+                                <tbody>
+                                {% for show_item in item_list.object_list %}
+                                    <tr role="row" class="even">
+                                        {% field_data show_item show_field_list ex_field_list %}
+                                        <td>
+                                            {% if 'accounts-permission-grant_perm' in request.permission_codes %}
+                                                <button class="btn btn-info btn-xs" type="button"
+                                                        onclick="open_grant_perm_layer({{ show_item.id }})">
+                                                    {% trans '授权' %}
+                                                </button>
+                                            {% endif %}
+                                            {% if 'accounts-manage-role-edit' in request.permission_codes %}
+                                                <button class="btn btn-info btn-xs" type="button"
+                                                        onclick="open_edit_role_layer({{ show_item.id }})">
+                                                    {% trans '编辑' %}
+                                                </button>
+                                            {% endif %}
+                                            {% if 'accounts-manage-role-del' in request.permission_codes %}
+                                                <button class="btn  btn-danger btn-xs" type="button" data-toggle="modal"
+                                                        data-target="#delModal"
+                                                        onclick="del_id({{ show_item.id }},'{% url app.del_url show_item.id %}')">
+                                                    {% trans '删除' %}
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>{% endfor %}
+                                </tbody>{% endif %}
+                            <tfoot>
+                            <tr>
+                                {% if ex_field_list %}{% for value in ex_field_list.values %}
+                                    {% for key,value in value.items %}
+                                        {% ifequal key "fields" %}{% for field in value %}
+                                            <th>{% trans field|title %}</th>
+                                        {% endfor %}{% endifequal %}{% endfor %}{% endfor %}{% endif %}
+                                {% for field, fvname in show_fieldvname_dict.items %}
+                                    <th><a href="{{ url_sort_prefix }}{% get_sort_by_url sort_by field %}"
+                                           name="{{ field }}"
+                                           title="sort by {{ fvname }} ">{% trans fvname|title %}</a></th>
+                                {% endfor %}
+                                <th></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        {% ifequal is_frontend_paging False %}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <nav>
+                                        <ul class="pagination">
+                                            {% if item_list.has_previous %}
+                                                <li>
+                                                    <a href="
+                                            {{ page_nav_base_url }}{{ url_prefix }}{{ item_list.previous_page_number }}"
+                                                       aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ page_nav_base_url }}{{ url_prefix }}1"
+                                                       title="first">{% trans "first" %}</a>
+                                                </li>
+                                            {% endif %}
+
+                                            {% for p in page_range %}
+                                                {% ifequal p item_list.number %}
+                                                    <li class="active"><a href="#">{{ p }}</a></li>
+                                                {% else %}
+                                                    <li><a href="{{ page_nav_base_url }}{{ url_prefix }}{{ p }}"
+                                                           title="{{ p }}">{{ p }}</a></li>
+                                                {% endifequal %}
+                                            {% endfor %}
+
+                                            {% if item_list.has_next %}
+                                                <li>
+                                                    <a href="
+
+
+
+
+
+                                                            {{ page_nav_base_url }}{{ url_prefix }}{{ paginator.num_pages }}"
+                                                       title="last">{% trans "last" %}</a>
+                                                </li>
+                                                <li>
+                                                    <a href="
+
+
+
+
+
+                                                            {{ page_nav_base_url }}{{ url_prefix }}{{ paginator.num_pages }}"
+                                                       aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        {% endifequal %}
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+
+                <div class="modal modal-danger fade" id="delModal" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content cos-sm-2">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">Sure delete</h4>
+                            </div>
+                            <div class="modal-body" id='delAlert'>
+                            </div>
+                            <div class="modal-footer" id="delButton">
+                                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close
+                                </button>
+                                <button type="button" class="btn btn-primary btn-outline" onclick="del_sure()">Sure
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+{% endblock %}
+{% block custom_js %}
+    <script src="{% static "adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+    <!-- SlimScroll -->
+    <script src="{% static "adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js" %}"></script>
+    <!-- FastClick -->
+    <script src="{% static "adminlte/bower_components/fastclick/lib/fastclick.js" %}"></script>
+    <script type="text/javascript" src="{% static 'layer/layer.js' %}"></script>
+    <script src="{% static "common/js/deal-data.js" %}"></script>
+    <script>
+        $(function () {
+            //$('#list_table').DataTable()
+            $('#list_table').DataTable({
+                {%  ifequal is_frontend_paging True %}
+                    'paging': true,
+                    'info': true,
+                    'searching': true,
+                    'ordering': false,
+                {% endifequal %}
+                {%  ifequal is_frontend_paging False %}
+                    'paging': false,
+                    'info': false,
+                    'searching': false,
+                    'ordering': false,
+                {% endifequal %}
+                'lengthChange': true,
+                'autoWidth': true
+            })
+        })
+
+        function open_grant_perm_layer(id) {
+            layer.open({
+                type: 2,
+                area: ['550px', '600px'],
+                title: ['角色授权', 'background-color:#dae7f5'],
+                skin: 'layui-layer-demo', //加上边框
+                shadeClose: true,
+                btn: ['完成'],
+                content: '/accounts/permission/grant_perm_min/' + id + '/',
+                yes: function (index, layero) {
+                    layer.close(index);
+                },
+            });
+
+        }
+
+
+        function open_add_role_layer() {
+            layer.open({
+                type: 2,
+                area: ['320px', '380px'],
+                title: ['添加角色', 'background-color:#dae7f5'],
+                skin: 'layui-layer-demo', //加上边框
+                shadeClose: true,
+                btn: ['确认', '取消'],
+                content: '/accounts/role/add/',
+                yes: function (index, layero) {
+                    var ifname = "layui-layer-iframe" + index;//获得layer层的名字
+                    var Ifame = window.frames[ifname];
+                    Ifame.document.getElementById("myform").submit();
+                    layer.close(index);
+                },
+                btn2: function (index) {
+                    layer.close(index);
+                },
+                end: function () {
+                    window.location.reload();
+                },
+            });
+        }
+
+        function open_edit_role_layer(id) {
+            layer.open({
+                type: 2,
+                area: ['320px', '380px'],
+                title: ['编辑角色', 'background-color:#dae7f5'],
+                skin: 'layui-layer-demo', //加上边框
+                shadeClose: true,
+                btn: ['确认', '取消'],
+                content: '/accounts/role/edit/' + id + '/',
+                yes: function (index, layero) {
+                    var ifname = "layui-layer-iframe" + index;//获得layer层的名字
+                    var Ifame = window.frames[ifname];
+                    Ifame.document.getElementById("myform").submit();
+                    layer.close(index);
+                },
+                btn2: function (index) {
+                    layer.close(index);
+                },
+                end: function () {
+                    window.location.reload();
+                },
+            });
+
+        }
+    </script>
+{% endblock %}

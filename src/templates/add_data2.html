@@ -1,0 +1,72 @@
+{% extends "blank_box.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %} {% trans "Add " %}{% trans app.fun|title %} {% endblock %}
+
+{% block content_title %}Add {{ app.fun|title }} {% endblock %}
+{% block box_title %}{% endblock %}
+{% block box_body %}
+    <form class="form-horizontal" action="" method="post">
+        {% csrf_token %}
+        <fieldset>
+            {% if ex_form %}
+                {{ ex_form.as_bootstrap }}
+            {% endif %}
+            {{ form.as_bootstrap }}
+        </fieldset>
+        <div class="form-group">
+            <button type="reset" id="reset" class="btn btn-danger col-sm-offset-2"
+                    data-loading-text="Rollback...">{% trans "Reset" %}</button>
+            <button type="submit" id="submit" class="btn btn-primary col-sm-offset-1"
+                    data-loading-text="Add...">{% trans "Submit" %}</button>
+        </div>
+    </form>
+{% endblock %}
+{% block box_footer %}{% endblock %}
+{% block custom_js %}
+    <script src="{% static "common/js/adddate.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/admin/RelatedObjectLookups.js" %}"></script>
+    {% if m2m_list %}
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function () {
+                {% for m2m in m2m_list %}
+                    $('#id_{{m2m}}').multiSelect({
+                        selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='try \"关键字\"'>",
+                        selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='try \"关键字\"'>",
+                        afterInit: function (ms) {
+                            var that = this,
+                                $selectableSearch = that.$selectableUl.prev(),
+                                $selectionSearch = that.$selectionUl.prev(),
+                                selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+                                selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+
+                            that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                                .on('keydown', function (e) {
+                                    if (e.which === 40) {
+                                        that.$selectableUl.focus();
+                                        return false;
+                                    }
+                                });
+
+                            that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                                .on('keydown', function (e) {
+                                    if (e.which == 40) {
+                                        that.$selectionUl.focus();
+                                        return false;
+                                    }
+                                });
+                        },
+                        afterSelect: function () {
+                            this.qs1.cache();
+                            this.qs2.cache();
+                        },
+                        afterDeselect: function () {
+                            this.qs1.cache();
+                            this.qs2.cache();
+                        }
+                    });
+                {% endfor%}
+            });
+        </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+<li>Hello,World</li>
+
+{% for k,item in menu_dict.items %}
+    {% if item.active %}
+<li class="treeview  active">
+    {% else %}
+<li class="treeview">
+    {% endif %}
+                <a href="#">
+                    <i class="fa fa-map-o"></i> <span>{{ item.menu_title }}</span>
+                    <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                </a>
+                <ul class="treeview-menu">
+                {% for v in item.children %}
+                    {% if v.active %}
+                        <li class="active">
+                    {% else %}
+                        <li class="">
+                    {% endif %}
+                        <a href="{{ v.url }}"><i class="fa fa-circle-o"></i>{{ v.title }}</a>
+                    </li>
+                {% endfor %}
+                </ul>
+</li>
+{% endfor %}

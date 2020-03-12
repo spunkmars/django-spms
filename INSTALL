@@ -1,0 +1,101 @@
+
+
+一、部署、启动依赖软件
+-----------------
+# 如采用 mysql作为数据库， sqlite 不需要额外安装数据库。
+yum install mysql
+systemctl start mysql
+
+yum install redis
+systemctl start redis
+
+
+一、安装应用运行环境:
+-----------------
+pip3 install  ipaddress
+pip3 install  spmo  --no-index --find-links https://d.spunkmars.com/pypi/3/ --trusted-host d.spunkmars.com
+pip3 install  django-spcc  --no-index --find-links https://d.spunkmars.com/pypi/3/ --trusted-host d.spunkmars.com
+pip3 install -r requirements.txt
+
+
+二、创建数据库
+-----------------
+# 如采用 mysql作为数据库， sqlite 不需要额外配置。
+CREATE DATABASE IF NOT EXISTS spms DEFAULT CHARSET UTF8 COLLATE UTF8_GENERAL_CI;
+GRANT ALL PRIVILEGES ON spms.* TO spmsuser@127.0.0.1 IDENTIFIED BY 'spmspasswd';
+GRANT ALL PRIVILEGES ON spms.* TO spmsuser@localhost IDENTIFIED BY 'spmspasswd';
+FLUSH PRIVILEGES;
+
+
+三、修改配置
+-----------------
+1、应用配置：
+src/data/conf/
+├── cas.ini  # cas 站点配置
+├── common.ini # 站点名称，密钥等配置
+└── db.ini # 数据库配置
+
+2、其它配置：
+src/data/
+├── asset # 用户上传文件存储目录
+│   └── img
+│       └── account
+│           └── avatar # 用户头像存储目录
+│               └── default.jpg
+├── conf
+│   ├── cas.ini
+│   ├── common.ini
+│   └── db.ini
+├── db # 默认sqlite数据库存放目录
+├── fixtures
+│   └── account.json # 初始化数据
+├── gunicorn
+│   └── gunicorn.conf # gunicorn配置文件
+├── libdata
+├── locale  # 翻译文件
+│   ├── zh_CN
+│   │   └── LC_MESSAGES
+│   │       ├── django.mo
+│   │       └── django.po
+│   └── zh_TW
+│       └── LC_MESSAGES
+│           └── django.po
+├── nginx
+│   ├── nginx_celery_flower.conf # nginx 代理 celery flower配置
+│   └── nginx_spms.conf # spms网站nginx配置
+├── supervisor # supervisor 配置
+│   ├── daphne.conf
+│   ├── gunicorn.conf
+│   └── uwsgi.conf
+└── uwsgi
+    ├── uwsgi  # linux uwsgi 启动脚本
+    └── uwsgi_httpsocket_for_mac_9091.ini # uwsgi配置文件
+
+四、初始化应用
+-----------------
+python manage.py makemigrations
+python manage.py migrate --run-syncdb # 首次初始化数据库
+#python manage.py createsuperuser
+python manage.py collectstatic --noinput
+python manage.py loaddata data/fixtures/account.json # 导入初始菜单、权限、用户数据
+
+
+五、初始化账号信息
+-----------------
+用户名  ｜  角色      ｜  密码
+admin  ｜超级管理员   ｜  Abc123456@
+
+
+六、启动程序
+-----------------
+测试： http://127.0.0.1:8004
+cd src;/bin/bash bin/start_deps_for_mac.sh
+cd src;/bin/bash bin/start_mac.sh
+
+
+生产： http://spms.spunkmars.net
+ 1、根据实际部署环境修改 目录src/data/supervisor 下的文件，并软连或者拷贝 supervisor配置目录，
+ 重新加载supervisor配置。
+ 2、根据实际部署环境修改 src/data/nginx_spms.conf文件，并软连或拷贝至 nginx配置目录，
+ 重新加载nginx配置。
+

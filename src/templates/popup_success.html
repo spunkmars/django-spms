@@ -1,0 +1,43 @@
+{% extends "blank_box.html" %}
+{% load i18n %}
+{% load static %}
+{% block main_nav %}{% endblock %}
+{% block sidebar_nav %}{% endblock %}
+{% block current_location %}{% endblock %}
+{% block sidebar_control %}{% endblock %}
+{% block bottom %}{% endblock %}
+{% block title %}{% endblock %}#}
+{% block content_title %}{% endblock %}
+{% block box_title %}{% endblock %}
+{% block box_body %}
+
+{% endblock %}
+{% block box_footer %}{% endblock %}
+{% block custom_js %}
+    <script type="text/javascript" src="{% static 'common/js/jquery.cookie.js' %}"></script>
+    <script type="text/javascript" src="{% static 'layer/layer.js' %}"></script>
+    <script>
+        var to_field = '#{{ to_field }}', op = '{{ op }}', id = '{{ id }}', value = '{{ value }}';
+        if (to_field) {
+            switch (op) {
+                case 'create':
+                    if (id) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                        $option = '<option value=' + id + ' selected>' + value + '</option>';
+                        $(to_field, window.parent.document).append($option);
+                        $(to_field + '_change,' + to_field + '_delete', window.parent.document).removeClass('layui-btn-disabled');
+                    }
+                    break;
+                case 'update':
+                    if (id) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                        parent.{{ to_field }}_update_option_text(id, value); // 使用了select2
+                        {#$(to_field + ' option[value=' + id + ']', window.parent.document).html(value); // 普通#}
+                    }
+                    break;
+            }
+        }
+    </script>
+{% endblock %}

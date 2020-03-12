@@ -1,0 +1,33 @@
+include LICENSE
+include README.rst
+recursive-include src/static *
+recursive-include src/templates *
+recursive-include src/urls *
+recursive-include src/appxs *
+recursive-include src/views *
+recursive-include src/forms *
+recursive-include src/libs *
+recursive-include src/requirements *
+recursive-include src/templates *
+recursive-include src/templatetags *
+recursive-include src/tests *
+recursive-include src/utils *
+recursive-include src/bin *
+recursive-include src/config *
+recursive-include src/resource/file *
+include src/data/.gitkeep
+recursive-include  src/data/asset/img/account/avatar *
+include src/data/conf/.gitkeep
+include src/data/db/.gitkeep
+recursive-include  src/data/fixtures *
+recursive-include  src/data/libdata *
+recursive-include  src/data/uwsgi *
+recursive-include  src/data/locale *
+include src/resource/static/.gitkeep
+include src/runtime/log/.gitkeep
+include src/runtime/pid/.gitkeep
+include src/runtime/tmp/.gitkeep
+include src/manage.py
+include src/__init__.py
+include src/requirements.txt
+recursive-include docs *

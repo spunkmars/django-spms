@@ -1,0 +1,182 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> {% block title %} SPUNKMARS {% endblock %} </title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    {#    <meta name="viewport" content="width=device-width, initial-scale=1"/>#}
+    {% block main_css %}
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" href="{% static "adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{% static "adminlte/bower_components/font-awesome/css/font-awesome.min.css" %}">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="{% static "adminlte/bower_components/Ionicons/css/ionicons.min.css" %}">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="{% static "adminlte/dist/css/AdminLTE.min.css" %}">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+             folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="{% static "adminlte/dist/css/skins/_all-skins.min.css" %}">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+
+        <![endif]-->
+
+        <!-- Google Font -->
+        <link href="/static/multi-select/css/multi-select.css" rel="stylesheet">
+        <link href="/static/common/css/select2.min.css" rel="stylesheet"/>
+
+
+        <!-- mdeditor -->
+        <link href="/static/mdeditor/css/editormd.css" type="text/css" media="all" rel="stylesheet"/>
+
+
+        <style type="text/css">
+            .dropdown-submenu {
+                position: relative;
+            }
+
+            .dropdown-submenu > .dropdown-menu {
+                top: 0;
+                left: 100%;
+                margin-top: -6px;
+                margin-left: -1px;
+                -webkit-border-radius: 0 6px 6px 6px;
+                -moz-border-radius: 0 6px 6px;
+                border-radius: 0 6px 6px 6px;
+            }
+
+            .dropdown-submenu:hover > .dropdown-menu {
+                display: block;
+            }
+
+            .dropdown-submenu > a:after {
+                display: block;
+                content: " ";
+                float: right;
+                width: 0;
+                height: 0;
+                border-color: transparent;
+                border-style: solid;
+                border-width: 5px 0 5px 5px;
+                border-left-color: #ccc;
+                margin-top: 5px;
+                margin-right: -10px;
+            }
+
+            .dropdown-submenu:hover > a:after {
+                border-left-color: #fff;
+            }
+
+            .dropdown-submenu.pull-left {
+                float: none;
+            }
+
+            .dropdown-submenu.pull-left > .dropdown-menu {
+                left: -100%;
+                margin-left: 10px;
+                -webkit-border-radius: 6px 0 6px 6px;
+                -moz-border-radius: 6px 0 6px 6px;
+                border-radius: 6px 0 6px 6px;
+            }
+        </style>
+    {% endblock %}
+    {% block main_js %}
+        <!-- jQuery 3 -->
+        <script src="/static/adminlte/bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="/static/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="/static/respond/1.4.2/respond.min.js"></script>
+        <script src="/static/common/js/select2.min.js"></script>
+        <script src="/static/multi-select/js/jquery.multi-select.js"></script>
+        <script src="/static/multi-select/js/jquery.quicksearch.js"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="/static/adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <!-- FastClick -->
+        <script src="/static/adminlte/bower_components/fastclick/lib/fastclick.js"></script>
+        <!-- AdminLTE App -->
+        <script src="/static/adminlte/dist/js/adminlte.min.js"></script>
+        <!-- AdminLTE for demo purposes -->
+        <script src="/static/adminlte/dist/js/demo.js"></script>
+
+
+        <!-- Project  -->
+        <script src="/static/common/js/common.js"></script>
+        <script src="/static/common/js/csrf.js"></script>
+
+        <!-- ckeditor -->
+        <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+        <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+
+        <!-- mdeditor -->
+        <script type="text/javascript" src="/static/mdeditor/js/editormd.min.js"></script>
+
+
+    {% endblock %}
+    {% block custom_js %}{% endblock %}
+
+    {% block custom_css %} {% endblock %}
+</head>
+{#<body class="{% block html_body_css_style %}hold-transition skin-blue sidebar-mini fixed {% endblock %}">#}
+<body class="{% block html_body_css_style %} hold-transition skin-blue sidebar-mini {% endblock %}">
+
+{% block wrapper %}
+    <div class="wrapper">
+
+        <!-- /.navbar-header -->
+        {% block main_nav %}
+            {% include "main_nav.html" %}
+        {% endblock %}
+        <!-- Left side column. contains the logo and sidebar -->
+        {% block sidebar_nav %}
+            {% include "sidebar_nav.html" %}
+        {% endblock %}
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            {% block content %}
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        {% block content_title %}{% endblock %}
+                    </h1>
+                    {% block current_location %}
+                        {% include "location.html" %}
+                    {% endblock %}
+                </section>
+
+                <!-- Main content -->
+
+                {% block real_content %}
+                {% endblock %}
+
+            {% endblock %}
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <!-- Control Sidebar -->
+        {% block sidebar_control %}
+            {% include "sidebar_control.html" %}
+        {% endblock %}
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed
+             immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+        {% block bottom %}
+            {% include "bottom.html" %}
+        {% endblock %}
+
+    </div>
+    <!-- ./wrapper -->
+{% endblock %}
+
+
+</body>
+</html>

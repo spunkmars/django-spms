@@ -1,0 +1,30 @@
+{% extends "blank_box.html" %}
+{% load i18n %}
+{% load static %}
+{% block main_nav %}{% endblock %}
+{% block sidebar_nav %}{% endblock %}
+{% block current_location %}{% endblock %}
+{% block sidebar_control %}{% endblock %}
+{% block bottom %}{% endblock %}
+{% block title %}{% endblock %}#}
+{% block content_title %}{% endblock %}
+{% block custom_css %}
+{% endblock %}
+{% block box_title %}{% endblock %}
+{% block box_body %}
+
+    <form class="form-horizontal" id="myform" action="" method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        {#        <div class="clearfix" style="margin-bottom: 5px;"></div> <!-- 设置行间隔 -->#}
+        <div class="form-group col-xs-12">
+            <label for="avatar_file"></label>
+            <input id="id_avatar_file" name="avatar_file" type="file">
+            <p class="help-block">请上传头像图片</p>
+        </div>
+        {#        <div class="clearfix" style="margin-bottom: 5px;"></div> <!-- 设置行间隔 -->#}
+    </form>
+
+
+{% endblock %}
+{% block box_footer %}{% endblock %}
+{% block custom_js %}{% endblock %}

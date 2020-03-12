@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ SITE_NAME }} - Sign Up{% endblock %}
+{% block wrapper %}
+    <div id="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="login-panel panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Please Sign Up</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form role="form" method="post" action="">
+                                {% csrf_token %}
+                                <fieldset>
+                                    <input type="hidden" name="next" value="{{ next }}">
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Username" name="username" type="text"
+                                               autofocus>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Email" name="email" type="text"
+                                               autofocus>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Password" name="password1"
+                                               type="password"
+                                               value="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Password Again" name="password2"
+                                               type="password" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="id_checkcode" placeholder="Checkcode" type="text" name="checkcode"
+                                               maxlength="30"/>
+                                        <img onclick="this.setAttribute('src','{% url 'account:get_checkcode_image' %}?nocache='+Math.random());"
+                                             onload="if(this.width>this.height){ if(this.width>90)this.width=90; }else{if(this.height>25) this.height=25;}"
+                                             src="{% url 'account:get_checkcode_image' %}" alt="CheckCode"/>
+                                    </div>
+                                    <!-- Change this to a button or input when using this as a form -->
+                                    <button type="submit" class="btn btn-lg btn-success btn-block">SignUp</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#wrapper -->
+{% endblock %}

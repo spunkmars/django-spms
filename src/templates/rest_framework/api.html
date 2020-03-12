@@ -1,0 +1,24 @@
+{% extends "rest_framework/base.html" %}
+
+{% block title %}
+    {{ SITE_NAME }} REST API
+{% endblock %}
+
+{% block branding %}
+    <span>
+    <a class="navbar-brand" rel="nofollow" href="{% url 'site_index' %}">
+        {{ SITE_NAME }} REST API
+    </a>
+</span>
+{% endblock %}
+
+{% block footer %}
+    555
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> {{ SITE_VERSION }}
+    </div>
+    <strong>Copyright &copy; {{ SITE_COPYRIGHT_YEAR }} <a href="https://www.spunkmars.com">SpunkMars++</a>.</strong> All rights
+    reserved.
+  </footer>
+{% endblock %}

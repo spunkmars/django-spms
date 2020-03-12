@@ -1,0 +1,39 @@
+{% extends "blank_box.html" %}
+{% load i18n %}
+{% load static %}
+{% block main_nav %}{% endblock %}
+{% block sidebar_nav %}{% endblock %}
+{% block current_location %}{% endblock %}
+{% block sidebar_control %}{% endblock %}
+{% block bottom %}{% endblock %}
+{% block title %}{% endblock %}#}
+{% block content_title %}{% endblock %}
+{% block box_title %}{% endblock %}
+{% block box_body %}
+    <form class="form-horizontal" id="myform" action="" method="post">
+        {% csrf_token %}
+        <fieldset>
+            {% if ex_form %}
+                {{ ex_form.as_bootstrap }}
+            {% endif %}
+            {{ form.as_bootstrap }}
+        </fieldset>
+{#                <div class="form-group">#}
+{#                    <button type="reset" id="reset2" class="btn btn-danger col-sm-offset-2"#}
+{#                            data-loading-text="Rollback...">{% trans "Reset" %}</button>#}
+{#                    <button type="submit" id="submit2" class="btn btn-primary col-sm-offset-1"#}
+{#                            data-loading-text="Udpate...">{% trans "Submit" %}</button>#}
+{#                </div>#}
+    </form>
+{% endblock %}
+{% block box_footer %}{% endblock %}
+{% block custom_css %}
+{#        <link rel="stylesheet" href="{% static 'layer/theme/default/layer.css' %}">#}
+        <link rel="stylesheet" href="{% static "common/css/button.css" %}">
+{% endblock %}
+{% block custom_js %}
+    <script type="text/javascript" src="{% static 'common/js/jquery.cookie.js' %}"></script>
+    <script type="text/javascript" src="{% static 'layer/layer.js' %}"></script>
+    <script type="text/javascript" src="{% static "common/js/adddate.js" %}"></script>
+{% endblock %}
+

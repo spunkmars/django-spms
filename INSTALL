@@ -12,9 +12,8 @@ systemctl start redis
 
 一、安装应用运行环境:
 -----------------
-pip3 install  ipaddress
-pip3 install  spmo  --no-index --find-links https://d.spunkmars.com/pypi/3/ --trusted-host d.spunkmars.com
-pip3 install  django-spcc  --no-index --find-links https://d.spunkmars.com/pypi/3/ --trusted-host d.spunkmars.com
+pip3 install  https://github.com/spunkmars/spmo/archive/2.0.9.tar.gz
+pip3 install  https://github.com/spunkmars/django-spcc/archive/0.2.0.tar.gz
 pip3 install -r requirements.txt
 
 

@@ -19,7 +19,7 @@ constantly==15.1.0
 coreapi==2.3.3
 coreschema==0.0.4
 crossplane==0.5.3
-cryptography==2.8
+cryptography==3.2
 daphne==2.4.1
 Django==2.2.11
 django-autocomplete-light==3.5.1

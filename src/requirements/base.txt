@@ -39,7 +39,7 @@ django-rest-swagger==2.2.0
 django-spcc>=0.2.0
 django-timezone-field==4.0
 django-uwsgi==0.2.2
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 drf-yasg==1.17.1
 drfdocs==0.0.11

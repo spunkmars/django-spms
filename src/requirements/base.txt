@@ -99,7 +99,7 @@ spmo>=2.0.9
 sqlparse==0.3.1
 swagger-spec-validator==2.5.0
 tornado==5.1.1
-Twisted==19.10.0
+Twisted==22.4.0
 txaio==20.1.1
 uritemplate==3.0.1
 urllib3==1.25.8

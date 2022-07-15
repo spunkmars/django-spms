@@ -26,7 +26,7 @@ django-autocomplete-light==3.5.1
 django-cas-ng==4.1.1
 django-celery==3.3.1
 django-celery-beat==2.0.0
-django-celery-results==1.2.1
+django-celery-results==2.4.0
 django-ckeditor==5.9.0
 django-cors-headers==3.2.1
 django-debug-toolbar==2.2
